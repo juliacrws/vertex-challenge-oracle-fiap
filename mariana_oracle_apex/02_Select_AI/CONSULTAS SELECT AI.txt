@@ -1,0 +1,100 @@
+CONSULTA 1:
+
+prompt: Mostre o nome de cada município, sua população em 2021, a quantidade de profissionais de saúde da família ocupacional CBO 2251 em 2021 e calcule a quantidade de profissionais por 10 mil habitantes. Ordene do maior para o menor valor.
+
+SQL GERADO:
+SELECT
+m."NOME_MUNICIPIO" AS nome_municipio,
+p."POPULACAO" AS populacao_2021,
+ps."QUANTIDADE_PROFISSIONAIS" AS qtd_profissionais_2021,
+ROUND((ps."QUANTIDADE_PROFISSIONAIS" * 10000) / p."POPULACAO", 2) AS profissionais_por_10mil_habitantes
+FROM
+"ADMIN"."MUNICIPIO" m
+INNER JOIN
+"ADMIN"."POPULACAO" p ON m."ID_MUNICIPIO" = p."ID_MUNICIPIO"
+INNER JOIN
+"ADMIN"."PROFISSIONAL_SAUDE" ps ON m."ID_MUNICIPIO" = ps."ID_MUNICIPIO"
+WHERE
+p."ANO" = 2021
+AND ps."ANO" = 2021
+AND ps."FAMILIA_OCUPACIONAL_CBO" = 2251
+ORDER BY
+profissionais_por_10mil_habitantes DESC
+
+### Insight
+
+A disponibilidade relativa de profissionais varia bastante entre os municípios analisados. Adolfo apresenta a maior razão de profissionais por 10 mil habitantes, enquanto Embu-Guaçu apresenta a menor. Isso mostra que avaliar apenas a quantidade absoluta de profissionais pode distorcer a análise; a normalização pela população revela diferenças importantes de capacidade assistencial.
+
+### Recomendação
+
+O VERTEX deve usar esse indicador em conjunto com a utilização ambulatorial. Municípios com **alta disponibilidade relativa de profissionais, mas baixa utilização por habitante**, merecem investigação por possível subutilização da capacidade existente.
+
+E tem um cuidado importante para a apresentação: **não conclua que Adolfo “tem excesso de profissionais”**. Como é um município muito pequeno, qualquer variação no número de profissionais altera bastante a taxa per capita. É um bom exemplo de por que o índice precisa combinar múltiplos indicadores.
+
+
+
+
+
+
+CONSULTA 2:
+
+prompt: Mostre o nome de cada município, sua população e a quantidade de procedimentos ambulatoriais aprovados, calcule a quantidade de procedimentos aprovados por habitante e ordene do menor para o maior valor.
+
+SQL GERADO: 
+SELECT
+m."NOME_MUNICIPIO" AS nome_municipio,
+p."POPULACAO" AS populacao,
+pa."QUANTIDADE_APROVADA" AS procedimentos_aprovados,
+(pa."QUANTIDADE_APROVADA" / p."POPULACAO") AS procedimentos_por_habitante
+FROM
+"ADMIN"."MUNICIPIO" m
+JOIN
+"ADMIN"."POPULACAO" p ON m."ID_MUNICIPIO" = p."ID_MUNICIPIO"
+JOIN
+"ADMIN"."PRODUCAO_AMBULATORIAL" pa ON m."ID_MUNICIPIO" = pa."ID_MUNICIPIO"
+ORDER BY
+procedimentos_por_habitante ASC
+
+### Insight da Consulta 2
+
+Os municípios apresentam diferenças relevantes na utilização ambulatorial relativa à população. Cajobi, Carapicuíba e Embu-Guaçu aparecem com os menores volumes de procedimentos aprovados por habitante dentro da amostra, enquanto Adolfo e Bertioga apresentam utilização relativa muito superior.
+
+### Recomendação
+
+Municípios com menor utilização relativa devem ser analisados em conjunto com os indicadores de capacidade instalada e disponibilidade de profissionais. Se um município apresentar **baixa utilização por habitante, mas capacidade assistencial relativamente alta**, isso pode sinalizar subutilização e justificar investigação mais detalhada sobre barreiras de acesso.
+
+
+
+
+
+CONSULTA 3:
+
+prompt: Compare os municípios em 2021 considerando a população em 2021, a quantidade de profissionais de saúde da família CBO 2251 em 2021 e a quantidade de procedimentos ambulatoriais aprovados. Calcule profissionais por 10 mil habitantes e procedimentos por habitante e mostre primeiro os municípios com maior disponibilidade de profissionais e menor utilização ambulatorial relativa, como possíveis sinais de subutilização da capacidade assistencial.
+
+SQL GERADO: 
+SELECT
+m."NOME_MUNICIPIO",
+p."POPULACAO" AS "Populacao_2021",
+prof."QUANTIDADE_PROFISSIONAIS" AS "Profissionais_CBO_2251",
+(prof."QUANTIDADE_PROFISSIONAIS" * 10000 / p."POPULACAO") AS "Profissionais_por_10mil_Habitantes",
+prod."QUANTIDADE_APROVADA" AS "Procedimentos_Ambulatoriais",
+(prod."QUANTIDADE_APROVADA" / p."POPULACAO") AS "Procedimentos_por_Habitante"
+FROM
+"ADMIN"."MUNICIPIO" m
+JOIN
+"ADMIN"."POPULACAO" p ON m."ID_MUNICIPIO" = p."ID_MUNICIPIO" AND p."ANO" = 2021
+JOIN
+"ADMIN"."PROFISSIONAL_SAUDE" prof ON m."ID_MUNICIPIO" = prof."ID_MUNICIPIO" AND prof."ANO" = 2021 AND prof."FAMILIA_OCUPACIONAL_CBO" = 2251
+JOIN
+"ADMIN"."PRODUCAO_AMBULATORIAL" prod ON m."ID_MUNICIPIO" = prod."ID_MUNICIPIO"
+ORDER BY
+"Profissionais_por_10mil_Habitantes" DESC,
+"Procedimentos_por_Habitante" ASC
+
+### Insight da Consulta 3
+
+A combinação entre profissionais por 10 mil habitantes e procedimentos por habitante mostra que os municípios apresentam perfis muito diferentes de capacidade e utilização. A análise conjunta evita interpretações equivocadas: alta disponibilidade profissional, por si só, não significa subutilização, assim como baixa utilização pode refletir também menor capacidade instalada.
+
+### Recomendação
+
+O VERTEX deve priorizar a análise integrada de múltiplos indicadores — disponibilidade de profissionais, utilização ambulatorial e capacidade assistencial — antes de sinalizar possíveis casos de subutilização. O índice consolidado do projeto serve justamente para transformar essas dimensões em um critério de priorização mais robusto.

@@ -1,0 +1,160 @@
+-- ============================================================
+-- VERTEX - Consultas de validação
+-- Sprint 4
+-- ============================================================
+
+
+-- ------------------------------------------------------------
+-- 1. Validação dos municípios presentes no banco
+-- ------------------------------------------------------------
+
+SELECT
+    id_municipio,
+    nome_municipio,
+    sigla_uf
+FROM municipio
+ORDER BY nome_municipio;
+
+
+-- ------------------------------------------------------------
+-- 2. Validação integrada das quatro principais fontes
+-- Retorna OK quando o município possui dados em cada domínio
+-- ------------------------------------------------------------
+
+SELECT
+    m.id_municipio,
+    m.nome_municipio,
+
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM populacao p
+            WHERE p.id_municipio = m.id_municipio
+        )
+        THEN 'OK'
+        ELSE 'FALTA'
+    END AS populacao,
+
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM producao_ambulatorial pa
+            WHERE pa.id_municipio = m.id_municipio
+        )
+        THEN 'OK'
+        ELSE 'FALTA'
+    END AS producao,
+
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM profissional_saude ps
+            WHERE ps.id_municipio = m.id_municipio
+        )
+        THEN 'OK'
+        ELSE 'FALTA'
+    END AS profissionais,
+
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM estabelecimento e
+            WHERE e.id_municipio = m.id_municipio
+        )
+        THEN 'OK'
+        ELSE 'FALTA'
+    END AS estabelecimento
+
+FROM municipio m
+ORDER BY m.id_municipio;
+
+
+-- ------------------------------------------------------------
+-- 3. Validação das constraints
+-- ------------------------------------------------------------
+
+SELECT
+    table_name,
+    constraint_name,
+    constraint_type,
+    status
+FROM user_constraints
+WHERE table_name IN (
+    'MUNICIPIO',
+    'POPULACAO',
+    'PRODUCAO_AMBULATORIAL',
+    'PROFISSIONAL_SAUDE',
+    'ESTABELECIMENTO'
+)
+ORDER BY table_name, constraint_name;
+
+
+-- ------------------------------------------------------------
+-- 4. Validação das colunas documentadas semanticamente
+-- ------------------------------------------------------------
+
+SELECT
+    table_name,
+    column_name,
+    comments
+FROM user_col_comments
+WHERE table_name IN (
+    'MUNICIPIO',
+    'POPULACAO',
+    'PRODUCAO_AMBULATORIAL',
+    'PROFISSIONAL_SAUDE',
+    'ESTABELECIMENTO'
+)
+AND comments IS NOT NULL
+ORDER BY table_name, column_name;
+
+
+-- Total de colunas comentadas
+SELECT
+    COUNT(*) AS total_colunas_comentadas
+FROM user_col_comments
+WHERE table_name IN (
+    'MUNICIPIO',
+    'POPULACAO',
+    'PRODUCAO_AMBULATORIAL',
+    'PROFISSIONAL_SAUDE',
+    'ESTABELECIMENTO'
+)
+AND comments IS NOT NULL;
+
+
+-- ------------------------------------------------------------
+-- 5. Validação do perfil Select AI
+-- ------------------------------------------------------------
+
+SELECT
+    profile_name,
+    status
+FROM user_cloud_ai_profiles
+ORDER BY profile_name;
+
+
+-- ------------------------------------------------------------
+-- 6. Validação da nova base do índice de subutilização
+-- Schema WKSP_VERTEX
+-- ------------------------------------------------------------
+
+SELECT
+    COUNT(*) AS total_municipios
+FROM INDICE_SUBUTILIZACAO_VERTEX;
+
+
+-- ------------------------------------------------------------
+-- 7. Ranking dos municípios com maior índice de subutilização
+-- ------------------------------------------------------------
+
+SELECT
+    nome_municipio,
+    apc,
+    epc,
+    ppc,
+    capacidade_norm,
+    indice_subutilizacao
+FROM INDICE_SUBUTILIZACAO_VERTEX
+ORDER BY indice_subutilizacao DESC
+FETCH FIRST 10 ROWS ONLY;

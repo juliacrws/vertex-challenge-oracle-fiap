@@ -1,0 +1,79 @@
+-- ============================================================
+-- VERTEX - Scripts auxiliares da Sprint 4
+-- ============================================================
+
+
+-- ------------------------------------------------------------
+-- Validação da base utilizada inicialmente pelo dashboard
+-- ------------------------------------------------------------
+
+SELECT *
+FROM V_VERTEX_DASHBOARD
+ORDER BY nome_municipio;
+
+
+-- ------------------------------------------------------------
+-- Consulta da nova base consolidada do VERTEX
+-- ------------------------------------------------------------
+
+SELECT *
+FROM INDICE_SUBUTILIZACAO_VERTEX;
+
+
+-- ------------------------------------------------------------
+-- Top 10 municípios com maior subutilização
+-- Consulta utilizada como fonte do gráfico do Oracle APEX
+-- ------------------------------------------------------------
+
+SELECT
+    nome_municipio,
+    indice_subutilizacao
+FROM INDICE_SUBUTILIZACAO_VERTEX
+ORDER BY indice_subutilizacao DESC
+FETCH FIRST 10 ROWS ONLY;
+
+
+-- ------------------------------------------------------------
+-- Lista de municípios utilizada no filtro P2_MUNICIPIO do APEX
+-- ------------------------------------------------------------
+
+SELECT
+    nome_municipio AS display_value,
+    id_municipio AS return_value
+FROM INDICE_SUBUTILIZACAO_VERTEX
+ORDER BY nome_municipio;
+
+
+-- ------------------------------------------------------------
+-- Condição utilizada nos gráficos para filtro por município
+-- ------------------------------------------------------------
+
+-- Inserida no campo WHERE CLAUSE das séries do Oracle APEX:
+
+:P2_MUNICIPIO IS NULL
+OR ID_MUNICIPIO = :P2_MUNICIPIO;
+
+
+-- Page Items to Submit:
+-- P2_MUNICIPIO
+
+
+-- ------------------------------------------------------------
+-- Consulta das principais métricas da base consolidada
+-- ------------------------------------------------------------
+
+SELECT
+    id_municipio,
+    nome_municipio,
+    qtd_atendimentos_periodo,
+    populacao,
+    apc,
+    epc,
+    ppc,
+    epc_norm,
+    ppc_norm,
+    apc_norm,
+    capacidade_norm,
+    indice_subutilizacao
+FROM INDICE_SUBUTILIZACAO_VERTEX
+ORDER BY nome_municipio;

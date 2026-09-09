@@ -1,0 +1,71 @@
+-- ============================================================
+-- VERTEX - View utilizada na construção inicial do dashboard
+-- Schema: WKSP_VERTEX
+-- Sprint 4
+-- ============================================================
+
+CREATE OR REPLACE VIEW V_VERTEX_DASHBOARD AS
+SELECT
+    m.id_municipio,
+    m.nome_municipio,
+
+    p.ano,
+    p.populacao,
+
+    ps.quantidade_profissionais,
+
+    ROUND(
+        (ps.quantidade_profissionais * 10000) / p.populacao,
+        2
+    ) AS profissionais_por_10mil,
+
+    pa.quantidade_aprovada,
+
+    ROUND(
+        pa.quantidade_aprovada / p.populacao,
+        2
+    ) AS procedimentos_por_habitante,
+
+    NVL(e.quantidade_estabelecimentos, 0)
+        AS quantidade_estabelecimentos,
+
+    NVL(e.total_leitos, 0)
+        AS total_leitos
+
+FROM admin.municipio m
+
+JOIN admin.populacao p
+    ON p.id_municipio = m.id_municipio
+
+JOIN admin.profissional_saude ps
+    ON ps.id_municipio = m.id_municipio
+   AND ps.ano = p.ano
+   AND ps.familia_ocupacional_cbo = 2251
+
+JOIN admin.producao_ambulatorial pa
+    ON pa.id_municipio = m.id_municipio
+
+LEFT JOIN (
+    SELECT
+        id_municipio,
+        COUNT(*) AS quantidade_estabelecimentos,
+
+        SUM(
+            NVL(quantidade_leito_cirurgico, 0) +
+            NVL(quantidade_leito_clinico, 0) +
+            NVL(quantidade_leito_complementar, 0)
+        ) AS total_leitos
+
+    FROM admin.estabelecimento
+    WHERE ano = 2021
+    GROUP BY id_municipio
+) e
+    ON e.id_municipio = m.id_municipio
+
+WHERE p.ano = 2021;
+
+
+-- Validação da view
+SELECT *
+FROM V_VERTEX_DASHBOARD
+ORDER BY nome_municipio;

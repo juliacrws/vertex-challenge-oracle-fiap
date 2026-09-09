@@ -1,0 +1,33 @@
+-- ============================================================
+-- VERTEX - Permissões do schema ADMIN para o Oracle APEX
+-- Destino: WKSP_VERTEX
+-- Sprint 4
+-- ============================================================
+
+GRANT SELECT ON municipio
+TO WKSP_VERTEX;
+
+GRANT SELECT ON populacao
+TO WKSP_VERTEX;
+
+GRANT SELECT ON producao_ambulatorial
+TO WKSP_VERTEX;
+
+GRANT SELECT ON profissional_saude
+TO WKSP_VERTEX;
+
+GRANT SELECT ON estabelecimento
+TO WKSP_VERTEX;
+
+
+-- ============================================================
+-- Validação das permissões
+-- ============================================================
+
+SELECT
+    grantee,
+    table_name,
+    privilege
+FROM user_tab_privs_made
+WHERE grantee = 'WKSP_VERTEX'
+ORDER BY table_name;
