@@ -1,0 +1,19 @@
+[2026-09-10T14:13:27.778+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_vertex_batch.transformacao_sia_ibge manual__2026-09-10T14:13:22.279931+00:00 [queued]>
+[2026-09-10T14:13:27.790+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_vertex_batch.transformacao_sia_ibge manual__2026-09-10T14:13:22.279931+00:00 [queued]>
+[2026-09-10T14:13:27.790+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 1
+[2026-09-10T14:13:27.805+0000] {taskinstance.py:2214} INFO - Executing <Task(PythonOperator): transformacao_sia_ibge> on 2026-09-10 14:13:22.279931+00:00
+[2026-09-10T14:13:27.814+0000] {standard_task_runner.py:60} INFO - Started process 140 to run task
+[2026-09-10T14:13:27.818+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_vertex_batch', 'transformacao_sia_ibge', 'manual__2026-09-10T14:13:22.279931+00:00', '--job-id', '77', '--raw', '--subdir', 'DAGS_FOLDER/dag_vertex_batch.py', '--cfg-path', '/tmp/tmppi1612i6']
+[2026-09-10T14:13:27.820+0000] {standard_task_runner.py:88} INFO - Job 77: Subtask transformacao_sia_ibge
+[2026-09-10T14:13:27.881+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_vertex_batch.transformacao_sia_ibge manual__2026-09-10T14:13:22.279931+00:00 [running]> on host dbc10f61da2b
+[2026-09-10T14:13:27.978+0000] {taskinstance.py:2510} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='equipe_vertex' AIRFLOW_CTX_DAG_ID='pipeline_vertex_batch' AIRFLOW_CTX_TASK_ID='transformacao_sia_ibge' AIRFLOW_CTX_EXECUTION_DATE='2026-09-10T14:13:22.279931+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-09-10T14:13:22.279931+00:00'
+[2026-09-10T14:13:27.982+0000] {logging_mixin.py:188} INFO - Iniciando Transformação SIA/IBGE (Batch Layer - Camada Trusted)...
+[2026-09-10T14:13:27.994+0000] {logging_mixin.py:188} INFO -   Validação IBGE: 0 valores nulos em população.
+[2026-09-10T14:13:28.012+0000] {logging_mixin.py:188} INFO -   Validação SIA: removidas 9 linhas.
+[2026-09-10T14:13:28.024+0000] {logging_mixin.py:188} INFO -   Municípios SIA sem correspondência no IBGE: 0 de 643.
+[2026-09-10T14:13:28.029+0000] {logging_mixin.py:188} INFO -   SIA tratado: 643 municípios padronizados.
+[2026-09-10T14:13:28.030+0000] {logging_mixin.py:188} INFO - Transformação Batch Layer concluída.
+[2026-09-10T14:13:28.031+0000] {python.py:202} INFO - Done. Returned value was: None
+[2026-09-10T14:13:28.041+0000] {taskinstance.py:1149} INFO - Marking task as SUCCESS. dag_id=pipeline_vertex_batch, task_id=transformacao_sia_ibge, execution_date=20260910T141322, start_date=20260910T141327, end_date=20260910T141328
+[2026-09-10T14:13:28.072+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-09-10T14:13:28.107+0000] {taskinstance.py:3309} INFO - 1 downstream tasks scheduled from follow-on schedule check

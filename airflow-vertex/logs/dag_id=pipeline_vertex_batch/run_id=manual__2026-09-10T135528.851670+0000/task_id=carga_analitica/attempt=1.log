@@ -1,0 +1,57 @@
+[2026-09-10T13:55:35.576+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_vertex_batch.carga_analitica manual__2026-09-10T13:55:28.851670+00:00 [queued]>
+[2026-09-10T13:55:35.588+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_vertex_batch.carga_analitica manual__2026-09-10T13:55:28.851670+00:00 [queued]>
+[2026-09-10T13:55:35.589+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 1
+[2026-09-10T13:55:35.605+0000] {taskinstance.py:2214} INFO - Executing <Task(PythonOperator): carga_analitica> on 2026-09-10 13:55:28.851670+00:00
+[2026-09-10T13:55:35.615+0000] {standard_task_runner.py:60} INFO - Started process 314 to run task
+[2026-09-10T13:55:35.621+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_vertex_batch', 'carga_analitica', 'manual__2026-09-10T13:55:28.851670+00:00', '--job-id', '64', '--raw', '--subdir', 'DAGS_FOLDER/dag_vertex_batch.py', '--cfg-path', '/tmp/tmp_nic616k']
+[2026-09-10T13:55:35.623+0000] {standard_task_runner.py:88} INFO - Job 64: Subtask carga_analitica
+[2026-09-10T13:55:35.679+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_vertex_batch.carga_analitica manual__2026-09-10T13:55:28.851670+00:00 [running]> on host dbc10f61da2b
+[2026-09-10T13:55:35.781+0000] {taskinstance.py:2510} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='equipe_vertex' AIRFLOW_CTX_DAG_ID='pipeline_vertex_batch' AIRFLOW_CTX_TASK_ID='carga_analitica' AIRFLOW_CTX_EXECUTION_DATE='2026-09-10T13:55:28.851670+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-09-10T13:55:28.851670+00:00'
+[2026-09-10T13:55:35.786+0000] {logging_mixin.py:188} INFO - Iniciando Carga Analítica (Camada Serving)...
+[2026-09-10T13:55:35.839+0000] {logging_mixin.py:188} INFO -   Indicadores anuais (EPC/PPC) calculados: 2580 linhas.
+[2026-09-10T13:56:54.944+0000] {logging_mixin.py:188} INFO -   [Oracle] ERRO ao carregar SERVING_INDICADORES_ANUAIS: DPY-6005: cannot connect to database (CONNECTION_ID=Reo3LQGg6UfWdRuHvg8bUw==).
+DPY-6000: Listener refused connection. (Similar to ORA-12506)
+[2026-09-10T13:56:54.947+0000] {taskinstance.py:2728} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "src/oracledb/impl/thin/connection.pyx", line 334, in oracledb.thin_impl.ThinConnImpl._connect_with_address
+  File "src/oracledb/impl/thin/protocol.pyx", line 253, in oracledb.thin_impl.Protocol._connect_phase_one
+  File "src/oracledb/impl/thin/protocol.pyx", line 416, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 395, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/messages.pyx", line 1992, in oracledb.thin_impl.ConnectMessage.process
+  File "/home/airflow/.local/lib/python3.8/site-packages/oracledb/errors.py", line 195, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.OperationalError: DPY-6000: Listener refused connection. (Similar to ORA-12506)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 444, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 414, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 200, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 217, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/vertex_common.py", line 214, in carga_analitica
+    carregar_no_oracle(serving_anual, "SERVING_INDICADORES_ANUAIS")
+  File "/opt/airflow/dags/vertex_common.py", line 67, in carregar_no_oracle
+    with oracledb.connect(user=user, password=password, dsn=dsn) as conn:
+  File "/home/airflow/.local/lib/python3.8/site-packages/oracledb/connection.py", line 1257, in connect
+    return conn_class(dsn=dsn, pool=pool, params=params, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/oracledb/connection.py", line 575, in __init__
+    impl.connect(params_impl)
+  File "src/oracledb/impl/thin/connection.pyx", line 439, in oracledb.thin_impl.ThinConnImpl.connect
+  File "src/oracledb/impl/thin/connection.pyx", line 435, in oracledb.thin_impl.ThinConnImpl.connect
+  File "src/oracledb/impl/thin/protocol.pyx", line 395, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/connection.pyx", line 376, in oracledb.thin_impl.ThinConnImpl._connect_with_description
+  File "src/oracledb/impl/thin/connection.pyx", line 338, in oracledb.thin_impl.ThinConnImpl._connect_with_address
+  File "/home/airflow/.local/lib/python3.8/site-packages/oracledb/errors.py", line 195, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.OperationalError: DPY-6005: cannot connect to database (CONNECTION_ID=Reo3LQGg6UfWdRuHvg8bUw==).
+DPY-6000: Listener refused connection. (Similar to ORA-12506)
+[2026-09-10T13:56:54.966+0000] {taskinstance.py:1149} INFO - Marking task as FAILED. dag_id=pipeline_vertex_batch, task_id=carga_analitica, execution_date=20260910T135528, start_date=20260910T135535, end_date=20260910T135654
+[2026-09-10T13:56:54.986+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 64 for task carga_analitica (DPY-6005: cannot connect to database (CONNECTION_ID=Reo3LQGg6UfWdRuHvg8bUw==).
+DPY-6000: Listener refused connection. (Similar to ORA-12506); 314)
+[2026-09-10T13:56:55.009+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-09-10T13:56:55.057+0000] {taskinstance.py:3309} INFO - 0 downstream tasks scheduled from follow-on schedule check

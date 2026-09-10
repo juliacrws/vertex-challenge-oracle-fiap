@@ -1,0 +1,21 @@
+[2026-08-21T22:48:05.056+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_vertex_etl.transformacao_validacao manual__2026-08-21T22:47:59.171654+00:00 [queued]>
+[2026-08-21T22:48:05.069+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_vertex_etl.transformacao_validacao manual__2026-08-21T22:47:59.171654+00:00 [queued]>
+[2026-08-21T22:48:05.070+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 1
+[2026-08-21T22:48:05.095+0000] {taskinstance.py:2214} INFO - Executing <Task(PythonOperator): transformacao_validacao> on 2026-08-21 22:47:59.171654+00:00
+[2026-08-21T22:48:05.105+0000] {standard_task_runner.py:60} INFO - Started process 101 to run task
+[2026-08-21T22:48:05.111+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_vertex_etl', 'transformacao_validacao', 'manual__2026-08-21T22:47:59.171654+00:00', '--job-id', '12', '--raw', '--subdir', 'DAGS_FOLDER/dag_vertex_pipeline.py', '--cfg-path', '/tmp/tmpbuqihyib']
+[2026-08-21T22:48:05.114+0000] {standard_task_runner.py:88} INFO - Job 12: Subtask transformacao_validacao
+[2026-08-21T22:48:05.187+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_vertex_etl.transformacao_validacao manual__2026-08-21T22:47:59.171654+00:00 [running]> on host 464169508a73
+[2026-08-21T22:48:05.270+0000] {taskinstance.py:2510} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='equipe_vertex' AIRFLOW_CTX_DAG_ID='pipeline_vertex_etl' AIRFLOW_CTX_TASK_ID='transformacao_validacao' AIRFLOW_CTX_EXECUTION_DATE='2026-08-21T22:47:59.171654+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-08-21T22:47:59.171654+00:00'
+[2026-08-21T22:48:05.272+0000] {logging_mixin.py:188} INFO - Iniciando Transformação e Validação (Camada Trusted)...
+[2026-08-21T22:48:05.284+0000] {logging_mixin.py:188} INFO -   Validação IBGE: 0 valores nulos em população.
+[2026-08-21T22:48:05.587+0000] {logging_mixin.py:188} INFO -   CNES-ST agregado: 2580 combinações município/ano.
+[2026-08-21T22:48:05.632+0000] {logging_mixin.py:188} INFO -   CNES-PF agregado: 2580 combinações município/ano.
+[2026-08-21T22:48:05.637+0000] {logging_mixin.py:188} INFO -   Validação SIA: removidas 9 linhas (rodapé/total/nulos).
+[2026-08-21T22:48:05.649+0000] {logging_mixin.py:188} INFO -   Municípios SIA sem correspondência no IBGE: 0 de 643.
+[2026-08-21T22:48:05.653+0000] {logging_mixin.py:188} INFO -   SIA tratado: 643 municípios padronizados.
+[2026-08-21T22:48:05.654+0000] {logging_mixin.py:188} INFO - Transformação concluída. Dados padronizados para cruzamento.
+[2026-08-21T22:48:05.656+0000] {python.py:202} INFO - Done. Returned value was: None
+[2026-08-21T22:48:05.668+0000] {taskinstance.py:1149} INFO - Marking task as SUCCESS. dag_id=pipeline_vertex_etl, task_id=transformacao_validacao, execution_date=20260821T224759, start_date=20260821T224805, end_date=20260821T224805
+[2026-08-21T22:48:05.727+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-08-21T22:48:05.753+0000] {taskinstance.py:3309} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -1,0 +1,41 @@
+[2026-09-10T14:13:30.222+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: pipeline_vertex_batch.carga_analitica manual__2026-09-10T14:13:22.279931+00:00 [queued]>
+[2026-09-10T14:13:30.237+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: pipeline_vertex_batch.carga_analitica manual__2026-09-10T14:13:22.279931+00:00 [queued]>
+[2026-09-10T14:13:30.239+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 1
+[2026-09-10T14:13:30.258+0000] {taskinstance.py:2214} INFO - Executing <Task(PythonOperator): carga_analitica> on 2026-09-10 14:13:22.279931+00:00
+[2026-09-10T14:13:30.266+0000] {standard_task_runner.py:60} INFO - Started process 143 to run task
+[2026-09-10T14:13:30.270+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'pipeline_vertex_batch', 'carga_analitica', 'manual__2026-09-10T14:13:22.279931+00:00', '--job-id', '78', '--raw', '--subdir', 'DAGS_FOLDER/dag_vertex_batch.py', '--cfg-path', '/tmp/tmpb7x9ik33']
+[2026-09-10T14:13:30.275+0000] {standard_task_runner.py:88} INFO - Job 78: Subtask carga_analitica
+[2026-09-10T14:13:30.352+0000] {task_command.py:423} INFO - Running <TaskInstance: pipeline_vertex_batch.carga_analitica manual__2026-09-10T14:13:22.279931+00:00 [running]> on host dbc10f61da2b
+[2026-09-10T14:13:30.445+0000] {taskinstance.py:2510} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='equipe_vertex' AIRFLOW_CTX_DAG_ID='pipeline_vertex_batch' AIRFLOW_CTX_TASK_ID='carga_analitica' AIRFLOW_CTX_EXECUTION_DATE='2026-09-10T14:13:22.279931+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-09-10T14:13:22.279931+00:00'
+[2026-09-10T14:13:30.447+0000] {logging_mixin.py:188} INFO - Iniciando Carga Analítica (Camada Serving)...
+[2026-09-10T14:13:30.488+0000] {logging_mixin.py:188} INFO -   Indicadores anuais (EPC/PPC) calculados: 2580 linhas.
+[2026-09-10T14:13:31.003+0000] {logging_mixin.py:188} INFO -   [Oracle] ERRO ao carregar SERVING_INDICADORES_ANUAIS: ORA-12860: deadlock detected while waiting for a sibling row lock
+Help: https://docs.oracle.com/error-help/db/ora-12860/
+[2026-09-10T14:13:31.004+0000] {taskinstance.py:2728} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 444, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 414, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 200, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 217, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/vertex_common.py", line 500, in carga_analitica
+    carregar_no_oracle(
+  File "/opt/airflow/dags/vertex_common.py", line 96, in carregar_no_oracle
+    cur.executemany(insert_sql, rows)
+  File "/home/airflow/.local/lib/python3.8/site-packages/oracledb/cursor.py", line 758, in executemany
+    self._impl.executemany(
+  File "src/oracledb/impl/thin/cursor.pyx", line 234, in oracledb.thin_impl.ThinCursorImpl.executemany
+  File "src/oracledb/impl/thin/protocol.pyx", line 447, in oracledb.thin_impl.Protocol._process_single_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 448, in oracledb.thin_impl.Protocol._process_single_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 440, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/messages.pyx", line 103, in oracledb.thin_impl.Message._check_and_raise_exception
+oracledb.exceptions.DatabaseError: ORA-12860: deadlock detected while waiting for a sibling row lock
+Help: https://docs.oracle.com/error-help/db/ora-12860/
+[2026-09-10T14:13:31.018+0000] {taskinstance.py:1149} INFO - Marking task as FAILED. dag_id=pipeline_vertex_batch, task_id=carga_analitica, execution_date=20260910T141322, start_date=20260910T141330, end_date=20260910T141331
+[2026-09-10T14:13:31.030+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 78 for task carga_analitica (ORA-12860: deadlock detected while waiting for a sibling row lock
+Help: https://docs.oracle.com/error-help/db/ora-12860/; 143)
+[2026-09-10T14:13:31.046+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-09-10T14:13:31.069+0000] {taskinstance.py:3309} INFO - 0 downstream tasks scheduled from follow-on schedule check
