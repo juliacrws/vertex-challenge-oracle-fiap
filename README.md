@@ -76,7 +76,7 @@ A arquitetura foi organizada segundo uma abordagem inspirada em **Lambda Archite
 A DAG `pipeline_vertex_batch`, definida em:
 
 ```text
-dags/dag_vertex_batch.py
+airflow-vertex/dags/dag_vertex_batch.py
 ```
 
 é executada mensalmente.
@@ -106,7 +106,7 @@ A Batch Layer acompanha a periodicidade de atualização dos dados de produção
 A DAG `pipeline_vertex_speed`, definida em:
 
 ```text
-dags/dag_vertex_speed.py
+airflow-vertex/dags/dag_vertex_speed.py
 ```
 
 possui execução diária.
@@ -124,7 +124,7 @@ Transformação CNES
 As funções compartilhadas pelos pipelines estão centralizadas em:
 
 ```text
-dags/vertex_common.py
+airflow-vertex/dags/vertex_common.py
 ```
 
 A separação entre Batch Layer e Speed Layer permite tratar fontes com diferentes frequências de atualização.
@@ -300,9 +300,9 @@ airflow-vertex/evidencias/
 As DAGs principais mantidas no projeto são:
 
 ```text
-dags/dag_vertex_batch.py
-dags/dag_vertex_speed.py
-dags/vertex_common.py
+airflow-vertex/dags/dag_vertex_batch.py
+airflow-vertex/dags/dag_vertex_speed.py
+airflow-vertex/dags/vertex_common.py
 ```
 
 ---
@@ -345,11 +345,6 @@ vertex-challenge-oracle-fiap/
 │   ├── .env
 │   └── docker-compose.yaml
 │
-├── dags/
-│   ├── dag_vertex_batch.py
-│   ├── dag_vertex_speed.py
-│   └── vertex_common.py
-│
 ├── dashboard/
 │
 ├── docs/
@@ -377,7 +372,6 @@ vertex-challenge-oracle-fiap/
 
 | Diretório                               | Conteúdo principal                                                     |
 | --------------------------------------- | ---------------------------------------------------------------------- |
-| `dags/`                                 | Pipeline Airflow baseado em Batch Layer e Speed Layer                  |
 | `airflow-vertex/`                       | Ambiente local de execução do Apache Airflow                           |
 | `mariana_oracle_apex/`                  | Banco Oracle, Select AI, Dashboard APEX e scripts SQL da solução final |
 | `notebooks/`                            | Análise exploratória dos dados                                         |

@@ -17,7 +17,7 @@ from airflow.sensors.python import PythonSensor
 from airflow.models import TaskInstance
 from airflow.utils.state import TaskInstanceState
 from airflow.utils.session import provide_session
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from vertex_common import (
     ingestao_sia,
@@ -31,11 +31,13 @@ default_args = {
     "start_date": datetime(2026, 8, 20),
 }
 
+JANELA_MAX_ATRASO = timedelta(hours=48)
+
 @provide_session
 def speed_layer_concluida(session=None):
     """
-    Retorna True quando já existe pelo menos uma execução bem-sucedida
-    da transformação da Speed Layer.
+    Retorna True somente quando existe uma execução BEM-SUCEDIDA
+    e RECENTE (dentro da janela esperada do ciclo diário) da Speed Layer.
     """
     ultima_execucao = (
         session.query(TaskInstance)
@@ -44,10 +46,15 @@ def speed_layer_concluida(session=None):
             TaskInstance.task_id == "transformacao_cnes_speed_layer",
             TaskInstance.state == TaskInstanceState.SUCCESS,
         )
+        .order_by(TaskInstance.end_date.desc())
         .first()
     )
 
-    return ultima_execucao is not None
+    if ultima_execucao is None or ultima_execucao.end_date is None:
+        return False
+
+    agora = datetime.now(timezone.utc)
+    return (agora - ultima_execucao.end_date) <= JANELA_MAX_ATRASO
 
 with DAG(
     "pipeline_vertex_batch",
