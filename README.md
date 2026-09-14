@@ -101,6 +101,26 @@ A Batch Layer acompanha a periodicidade de atualização dos dados de produção
 
 ---
 
+## 🔄 Status da automação (Batch Layer) na entrega atual
+
+O pipeline automatizado (`pipeline_vertex_batch` e `pipeline_vertex_speed`) está funcional 
+e validado como **prova de conceito** da arquitetura Lambda proposta: ingestão, 
+transformação, sincronização entre camadas e carga no Oracle.
+
+Na versão atual, a carga automatizada grava nas tabelas `SERVING_INDICADORES_ANUAIS`, 
+`SERVING_INDICADOR_APC` e `INDICE_SUBUTILIZACAO`. A migração da carga automatizada para 
+o modelo dimensional final (`DIM_POPULACAO`, `DIM_ESTABELECIMENTO`, `DIM_PROFISSIONAL`, 
+`FATO_ATENDIMENTO`) depende de fontes de dados adicionais (ex: granularidade mensal do 
+SIA com valores aprovados, detalhamento ambulatorial do CNES) que ainda não estão 
+disponíveis no ambiente de ingestão.
+
+Por isso, para garantir a integridade dos dados na entrega, a carga final nas tabelas 
+dimensionais utilizadas pelo Dashboard VERTEX (APEX) e pelo Select AI foi realizada 
+manualmente. A automação completa dessa etapa é indicada como próximo passo de evolução 
+do projeto.
+
+---
+
 ## ⚡ Speed Layer
 
 A DAG `pipeline_vertex_speed`, definida em:
