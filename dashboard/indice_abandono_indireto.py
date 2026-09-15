@@ -28,6 +28,13 @@ compor o índice:
 Quanto maior o IAI, maior o sinal de abandono indireto (capacidade ociosa).
 Quanto menor (mais negativo), maior a utilização em relação à capacidade
 disponível.
+
+NOTA: este é o índice exploratório (Min-Max) desenvolvido para a disciplina
+"Building Data-Driven Applications for Data Science". A versão adotada como
+oficial pela solução final é a view VW_INDICE_VERTEX (Oracle), com a fórmula
+APC / (0,5×PPC + 0,5×EPC) — nessa versão oficial, índice MENOR indica maior
+subutilização (leitura invertida em relação ao IAI deste script). Ver
+`sql/andreza_oficial/` e a seção "Índice de subutilização" do README.
 ==============================================================================
 """
 
