@@ -313,7 +313,7 @@ O painel é totalmente autocontido (sem dependências externas) e apresenta:
 
 ```
 Repositório: dashboard/index.html
-Deploy ao vivo: [URL Netlify será inserida aqui]
+Deploy ao vivo: (https://vertex-challenge-oracle-fiap.netlify.app/)
 ```
 
 O dashboard utiliza a mesma fonte de dados (`ADMIN.V_VERTEX_DASHBOARD`) e segue as mesmas metodologias de cálculo do painel APEX, garantindo consistência entre as análises.
