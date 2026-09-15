@@ -103,21 +103,23 @@ A Batch Layer acompanha a periodicidade de atualização dos dados de produção
 
 ## 🔄 Status da automação (Batch Layer) na entrega atual
 
-O pipeline automatizado (`pipeline_vertex_batch` e `pipeline_vertex_speed`) está funcional 
-e validado como **prova de conceito** da arquitetura Lambda proposta: ingestão, 
+O pipeline automatizado (`pipeline_vertex_batch` e `pipeline_vertex_speed`) está funcional
+e validado como **prova de conceito** da arquitetura Lambda proposta: ingestão,
 transformação, sincronização entre camadas e carga no Oracle.
 
-Na versão atual, a carga automatizada grava nas tabelas `SERVING_INDICADORES_ANUAIS`, 
-`SERVING_INDICADOR_APC` e `INDICE_SUBUTILIZACAO`. A migração da carga automatizada para 
-o modelo dimensional final (`DIM_POPULACAO`, `DIM_ESTABELECIMENTO`, `DIM_PROFISSIONAL`, 
-`FATO_ATENDIMENTO`) depende de fontes de dados adicionais (ex: granularidade mensal do 
-SIA com valores aprovados, detalhamento ambulatorial do CNES) que ainda não estão 
-disponíveis no ambiente de ingestão.
+Ele opera em granularidade **anual** e grava nas tabelas `SERVING_INDICADORES_ANUAIS`,
+`SERVING_INDICADOR_APC` e `INDICE_SUBUTILIZACAO` — uma versão inicial do projeto. O
+modelo dimensional final adotado pela solução (`DIM_POPULACAO`, `DIM_ESTABELECIMENTO`,
+`DIM_PROFISSIONAL`, `FATO_ATENDIMENTO`) opera em granularidade **mensal** (30.960 linhas
+= 645 municípios × 4 anos × 12 meses), a partir do modelo 3FN de `sql/andreza_oficial/`.
+Como as granularidades são diferentes, a migração da carga automatizada do Airflow para
+o padrão mensal não é uma simples troca de nome de tabela, e por isso não foi feita a
+tempo da entrega.
 
-Por isso, para garantir a integridade dos dados na entrega, a carga final nas tabelas 
-dimensionais utilizadas pelo Dashboard VERTEX (APEX) e pelo Select AI foi realizada 
-manualmente. A automação completa dessa etapa é indicada como próximo passo de evolução 
-do projeto.
+A carga final nas tabelas dimensionais efetivamente usadas pelo Dashboard VERTEX (APEX)
+e pelo Select AI foi feita diretamente no Oracle a partir dos datasets de staging
+(SIASUS, IBGE, CNES), com validação de volumetria em cada etapa. A automação completa
+dessa carga na granularidade mensal é indicada como próximo passo de evolução do projeto.
 
 ---
 
@@ -175,22 +177,28 @@ Esse indicador permite comparar municípios de diferentes portes populacionais d
 
 ## 📐 Índice de subutilização
 
-A versão utilizada na solução final é baseada na normalização **Min-Max** dos componentes analíticos.
-
-De forma conceitual, o índice compara:
+A versão utilizada na solução final é a **view `VW_INDICE_VERTEX`**, construída sobre o
+modelo dimensional (`FATO_ATENDIMENTO` + `DIM_POPULACAO`/`DIM_ESTABELECIMENTO`/
+`DIM_PROFISSIONAL`), com a fórmula:
 
 ```text
-capacidade normalizada
--
-produção ambulatorial normalizada
+índice = APC / (0,5 × PPC + 0,5 × EPC)
 ```
 
-A finalidade do índice é destacar municípios que merecem investigação adicional por apresentarem possível diferença entre capacidade disponível e utilização observada.
+**Importante:** nessa fórmula, índice **menor** indica **maior** indício de
+subutilização (é o inverso da leitura de uma versão anterior baseada em normalização
+Min-Max, descontinuada). Quando o mês/município está marcado com
+`FLAG_DADO_INCOMPLETO = 1` (por exemplo, todo o estado em março/2024), o índice fica
+`NULL` em vez de ser calculado sobre um dado ausente tratado como zero.
 
-A tabela utilizada no ambiente Oracle é:
+A finalidade do índice é destacar municípios que merecem investigação adicional por
+apresentarem possível diferença entre capacidade disponível e utilização observada.
+
+As tabelas/views utilizadas no ambiente Oracle são:
 
 ```text
-INDICE_SUBUTILIZACAO_VERTEX
+ADMIN.FATO_ATENDIMENTO, ADMIN.DIM_*, ADMIN.VW_INDICE_VERTEX
+ADMIN.V_VERTEX_DASHBOARD  →  WKSP_VERTEX.V_VERTEX_DASHBOARD (view-ponte usada pelo APEX)
 ```
 
 Os scripts SQL relacionados à implementação utilizada no ambiente Oracle estão disponíveis em:
@@ -205,9 +213,8 @@ O diretório:
 sql/andreza_oficial/
 ```
 
-permanece no repositório como uma abordagem analítica complementar, com modelagem mais granular e tratamento adicional de qualidade dos dados.
-
-Essa modelagem não corresponde ao schema utilizado pelo dashboard final em produção.
+contém o DDL completo do modelo 3FN + dimensional (staging → `DIM_*`/`FATO_ATENDIMENTO`
+→ `VW_INDICE_VERTEX`) que fundamenta essa versão final.
 
 ---
 
@@ -381,7 +388,8 @@ vertex-challenge-oracle-fiap/
 │
 ├── sql/
 │   ├── andreza_oficial/
-│   └── DEPRECATED_ddl_serving_tables.sql
+│   └── arquivo/
+│       └── ddl_serving_tables_deprecated.sql
 │
 └── README.md
 ```
@@ -398,8 +406,9 @@ vertex-challenge-oracle-fiap/
 | `graficos/`                             | Gráficos e rankings produzidos durante a análise                       |
 | `dashboard/`                            | Scripts analíticos desenvolvidos durante o projeto                     |
 | `docs/`                                 | Documentação de governança, ética e materiais complementares           |
-| `sql/andreza_oficial/`                  | Modelagem complementar e análise de qualidade de dados                 |
-| `sql/DEPRECATED_ddl_serving_tables.sql` | Implementação antiga mantida apenas como histórico                     |
+| `sql/andreza_oficial/`                  | Modelagem oficial (3FN + dimensional) usada pelo dashboard/Select AI finais |
+| `sql/arquivo/`                          | DDL antigo (schema `SERVING_*`), mantido apenas como histórico         |
+| `modelo_preditivo/dados/`               | CSVs de entrada (indicadores) usados pelo modelo preditivo             |
 
 ---
 
