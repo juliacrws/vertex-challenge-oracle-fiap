@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -11,7 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.inspection import permutation_importance
 
-SERVING = "/home/claude/airflow_extract/airflow-vertex/run2/serving"
+SERVING = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dados")
 
 anual = pd.read_csv(f"{SERVING}/indicadores_anuais_epc_ppc.csv")
 apc = pd.read_csv(f"{SERVING}/indicador_periodo_apc.csv")
