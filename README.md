@@ -1,169 +1,256 @@
-# VERTEX — Challenge Oracle & FIAP 2026 (1TSCPF)
+# VERTEX | Painel Inteligente de Acesso Hospitalar e Perfil de Atendimento
 
-**Painel Inteligente de Acesso Hospitalar e Perfil de Atendimento**
+> **Dados que conectam necessidade e capacidade.**
 
-A **VERTEX** é uma solução de apoio à análise de dados de saúde pública que integra informações de população, profissionais, estabelecimentos e produção ambulatorial para evidenciar possíveis desequilíbrios entre **necessidade da população** e **capacidade assistencial disponível**.
+A **VERTEX** é uma solução de apoio à análise de dados de saúde pública desenvolvida para o **Challenge Oracle & FIAP 2026**, na turma **1TSCPF**.
 
-O projeto foi desenvolvido para o **Challenge Oracle & FIAP 2026**, combinando engenharia de dados, Apache Airflow, Oracle Autonomous Database, SQL, Oracle APEX e Oracle Select AI.
+A solução integra dados públicos de **população, profissionais de saúde, estabelecimentos e produção ambulatorial** para permitir uma análise integrada da relação entre **necessidade da população, capacidade assistencial e utilização dos serviços**.
+
+O projeto combina **engenharia de dados, Apache Airflow, Oracle Autonomous Database, SQL, Oracle APEX e Oracle Select AI**, transformando dados públicos dispersos em indicadores comparáveis e acessíveis para análise.
 
 ---
 
 ## 👥 Equipe
 
-* **Andreza do Livramento Silva** — RM570964
-* **Diego Gaspar** — RM568924
-* **João Guilherme Cavalcante Matos** — RM570975
-* **Julia de Moraes Barbosa** — RM572997
-* **Mariana Ayumi Dantas Kuramitsu** — RM572788
+| Integrante                      |       RM |
+| ------------------------------- | -------: |
+| Andreza do Livramento Silva     | RM570964 |
+| Diego Gaspar                    | RM568924 |
+| João Guilherme Cavalcante Matos | RM570975 |
+| **Julia de Moraes Barbosa**     | RM572997 |
+| Mariana Ayumi Dantas Kuramitsu  | RM572788 |
 
 ---
 
-## 🏥 Problema de negócio
+# 🏥 Problema
 
-No contexto da saúde pública, a indisponibilidade de atendimento nem sempre significa apenas falta absoluta de recursos.
+Na saúde pública, a indisponibilidade de atendimento nem sempre representa apenas uma ausência absoluta de recursos.
 
-Em muitos casos, o desafio está em entender **como população, profissionais, estabelecimentos e produção estão distribuídos entre os municípios**.
+Um dos desafios está em compreender **como população, profissionais, estabelecimentos e produção ambulatorial estão distribuídos entre os municípios**.
 
-Essas informações existem em bases públicas, mas, quando analisadas separadamente, dificultam a identificação de situações como:
+Essas informações estão disponíveis em diferentes bases públicas, mas sua análise isolada dificulta a identificação de situações como:
 
 * baixa disponibilidade relativa de profissionais;
-* produção ambulatorial incompatível com o porte populacional;
+* produção ambulatorial desproporcional ao porte populacional;
 * capacidade potencialmente subutilizada;
-* regiões com carência estrutural;
-* diferenças relevantes entre municípios que não aparecem em valores absolutos.
+* possíveis carências estruturais;
+* diferenças entre municípios que não aparecem quando são considerados apenas valores absolutos.
 
-A VERTEX foi criada para transformar esses dados dispersos em uma visão integrada, comparável e acessível.
+A VERTEX foi desenvolvida para **integrar essas informações em uma visão única, comparável e orientada à investigação**.
 
----
-
-## 🎯 Objetivo da solução
-
-A VERTEX busca apoiar gestores e analistas na identificação de desigualdades e possíveis desequilíbrios na utilização dos recursos de saúde.
-
-A solução permite relacionar indicadores e observar os municípios sob diferentes perspectivas, transformando dados públicos em informações que apoiam investigação e tomada de decisão.
-
-Os resultados devem ser interpretados como **indicadores de apoio à análise**, e não como diagnóstico definitivo de eficiência ou ineficiência de um município.
+> **Importante:** os indicadores da VERTEX são ferramentas de apoio à análise. Eles não representam, isoladamente, um diagnóstico definitivo de eficiência, ineficiência ou qualidade da assistência de um município.
 
 ---
 
-## 🏗️ Arquitetura da solução
+# 🎯 Objetivo
+
+A VERTEX busca apoiar gestores e analistas na identificação de **possíveis desequilíbrios entre capacidade assistencial e utilização observada**.
+
+A solução permite:
+
+* integrar diferentes fontes de dados públicos;
+* comparar municípios de diferentes portes;
+* utilizar indicadores relativos à população;
+* analisar capacidade e produção ambulatorial;
+* identificar padrões que merecem investigação;
+* explorar os dados por meio de dashboards;
+* realizar consultas em linguagem natural utilizando inteligência artificial.
+
+O fluxo analítico da solução pode ser resumido em:
 
 ```text
-Fontes públicas de dados
-        ↓
-Apache Airflow
-Batch Layer + Speed Layer
-        ↓
-Processamento e consolidação
-        ↓
-Oracle Autonomous Database
-        ↓
-SQL + Views analíticas
-        ↓
-Oracle Select AI
-        ↓
-Oracle APEX / Dashboard VERTEX
-        ↓
-Comparação → Insight → Decisão
+DADOS
+  ↓
+INTEGRAÇÃO
+  ↓
+COMPARAÇÃO
+  ↓
+INSIGHT
+  ↓
+INVESTIGAÇÃO / DECISÃO
 ```
-
-A arquitetura foi organizada segundo uma abordagem inspirada em **Lambda Architecture**, com fluxos independentes para dados de diferentes cadências.
 
 ---
 
-## ⚙️ Batch Layer
+# 🏗️ Arquitetura
 
-A DAG `pipeline_vertex_batch`, definida em:
+A arquitetura da VERTEX foi estruturada com uma abordagem inspirada em **Lambda Architecture**, permitindo trabalhar com fontes que possuem diferentes frequências de atualização.
+
+```text
+                FONTES PÚBLICAS
+                       │
+             ┌─────────┴─────────┐
+             ↓                   ↓
+       BATCH LAYER          SPEED LAYER
+       SIA/SUS + IBGE           CNES
+             │                   │
+             └─────────┬─────────┘
+                       ↓
+              PROCESSAMENTO
+              E CONSOLIDAÇÃO
+                       ↓
+          ORACLE AUTONOMOUS DATABASE
+                       │
+              ┌────────┴────────┐
+              ↓                 ↓
+          SQL / VIEWS       SELECT AI
+              │                 │
+              └────────┬────────┘
+                       ↓
+                 ORACLE APEX
+                       │
+                       ↓
+             DASHBOARD VERTEX
+                       │
+                       ↓
+             COMPARAÇÃO → INSIGHT
+```
+
+---
+
+# ⚙️ Engenharia de Dados
+
+## Apache Airflow
+
+O **Apache Airflow** é utilizado como camada de orquestração dos pipelines de dados.
+
+O ambiente está organizado em:
+
+```text
+airflow-vertex/
+```
+
+As principais DAGs são:
+
+```text
+airflow-vertex/dags/
+├── dag_vertex_batch.py
+├── dag_vertex_speed.py
+└── vertex_common.py
+```
+
+O diretório também contém arquivos relacionados ao ambiente Docker, dados de execução, logs, evidências e configuração da conexão com o Oracle.
+
+---
+
+## 📦 Batch Layer
+
+A DAG:
 
 ```text
 airflow-vertex/dags/dag_vertex_batch.py
 ```
 
-é executada mensalmente.
+representa o fluxo de processamento dos dados provenientes principalmente do **SIA/SUS e IBGE**.
 
-Ela processa dados relacionados ao **SIA/SUS e IBGE**, aguarda uma execução válida da Speed Layer e então realiza a carga analítica e o cálculo do índice final de subutilização.
-
-Fluxo principal:
+Seu fluxo conceitual é:
 
 ```text
 Ingestão SIA
-    ↓
+     ↓
 Transformação SIA + IBGE
-    ↓
+     ↓
 Sincronização com Speed Layer
-    ↓
+     ↓
 Carga analítica
-    ↓
-Índice final de subutilização
+     ↓
+Cálculo do índice
 ```
 
-A Batch Layer acompanha a periodicidade de atualização dos dados de produção ambulatorial.
+A Batch Layer foi projetada para acompanhar a periodicidade de atualização dos dados de produção ambulatorial.
+
+### Status da automação
+
+O pipeline `pipeline_vertex_batch` está funcional e validado como **prova de conceito da arquitetura proposta**, contemplando:
+
+* ingestão;
+* transformação;
+* sincronização entre camadas;
+* carga no Oracle;
+* cálculo de indicadores.
+
+Na implementação atual do Airflow, o pipeline automatizado opera em **granularidade anual** e grava dados nas tabelas:
+
+```text
+SERVING_INDICADORES_ANUAIS
+SERVING_INDICADOR_APC
+INDICE_SUBUTILIZACAO
+```
+
+Esse conjunto representa uma versão inicial da solução.
+
+O modelo dimensional utilizado na versão final do Dashboard e do Select AI possui granularidade **mensal**, estruturado a partir do modelo oficial localizado em:
+
+```text
+sql/andreza_oficial/
+```
+
+O modelo final contempla:
+
+```text
+DIM_POPULACAO
+DIM_ESTABELECIMENTO
+DIM_PROFISSIONAL
+FATO_ATENDIMENTO
+```
+
+com:
+
+```text
+30.960 registros
+= 645 municípios × 4 anos × 12 meses
+```
+
+Como a carga automatizada existente no Airflow e o modelo dimensional final possuem granularidades diferentes, a migração da automação para o modelo mensal exigiria uma adaptação estrutural do pipeline.
+
+Por esse motivo, essa etapa não foi incorporada à entrega atual.
+
+A carga final utilizada pelo Dashboard VERTEX e pelo Select AI foi realizada diretamente no Oracle a partir dos datasets de **SIASUS, IBGE e CNES**, com validação de volumetria durante as etapas de processamento.
+
+> **Próxima evolução:** automatizar integralmente a carga do modelo dimensional mensal por meio do Airflow.
 
 ---
 
-## 🔄 Status da automação (Batch Layer) na entrega atual
+# ⚡ Speed Layer
 
-O pipeline automatizado (`pipeline_vertex_batch` e `pipeline_vertex_speed`) está funcional
-e validado como **prova de conceito** da arquitetura Lambda proposta: ingestão,
-transformação, sincronização entre camadas e carga no Oracle.
-
-Ele opera em granularidade **anual** e grava nas tabelas `SERVING_INDICADORES_ANUAIS`,
-`SERVING_INDICADOR_APC` e `INDICE_SUBUTILIZACAO` — uma versão inicial do projeto. O
-modelo dimensional final adotado pela solução (`DIM_POPULACAO`, `DIM_ESTABELECIMENTO`,
-`DIM_PROFISSIONAL`, `FATO_ATENDIMENTO`) opera em granularidade **mensal** (30.960 linhas
-= 645 municípios × 4 anos × 12 meses), a partir do modelo 3FN de `sql/andreza_oficial/`.
-Como as granularidades são diferentes, a migração da carga automatizada do Airflow para
-o padrão mensal não é uma simples troca de nome de tabela, e por isso não foi feita a
-tempo da entrega.
-
-A carga final nas tabelas dimensionais efetivamente usadas pelo Dashboard VERTEX (APEX)
-e pelo Select AI foi feita diretamente no Oracle a partir dos datasets de staging
-(SIASUS, IBGE, CNES), com validação de volumetria em cada etapa. A automação completa
-dessa carga na granularidade mensal é indicada como próximo passo de evolução do projeto.
-
----
-
-## ⚡ Speed Layer
-
-A DAG `pipeline_vertex_speed`, definida em:
+A DAG:
 
 ```text
 airflow-vertex/dags/dag_vertex_speed.py
 ```
 
-possui execução diária.
+representa a camada de atualização mais frequente da arquitetura.
 
-Ela trabalha com informações do **CNES**, representando uma camada de atualização mais frequente para dados relacionados à capacidade instalada e recursos humanos.
+Ela trabalha principalmente com dados do **CNES**, relacionados à capacidade instalada e aos recursos humanos.
 
-Fluxo principal:
+Fluxo:
 
 ```text
 Ingestão CNES
-    ↓
+     ↓
 Transformação CNES
 ```
 
-As funções compartilhadas pelos pipelines estão centralizadas em:
+A Speed Layer possui execução diária, permitindo representar uma cadência diferente daquela utilizada pelos dados de produção ambulatorial.
+
+Funções compartilhadas entre os pipelines estão centralizadas em:
 
 ```text
 airflow-vertex/dags/vertex_common.py
 ```
 
-A separação entre Batch Layer e Speed Layer permite tratar fontes com diferentes frequências de atualização.
-
 ---
 
-## 📊 Fontes e dimensões analisadas
+# 📊 Dados e Indicadores
 
-A solução trabalha com dados públicos relacionados a:
+A VERTEX integra informações relacionadas a:
 
 * municípios;
 * população;
 * profissionais de saúde;
 * estabelecimentos;
-* produção ambulatorial.
-
-Esses dados são integrados para permitir análises relativas, evitando depender apenas de números absolutos.
+* produção ambulatorial;
+* procedimentos realizados.
 
 Um dos indicadores utilizados é:
 
@@ -171,221 +258,250 @@ Um dos indicadores utilizados é:
 Profissionais por 10 mil habitantes
 ```
 
-Esse indicador permite comparar municípios de diferentes portes populacionais de forma mais adequada.
+A utilização de indicadores relativos permite comparar municípios de diferentes portes populacionais de maneira mais adequada do que uma análise baseada exclusivamente em valores absolutos.
 
 ---
 
-## 📐 Índice de subutilização
+# 📐 Índice de Subutilização
 
-A versão utilizada na solução final é a **view `VW_INDICE_VERTEX`**, construída sobre o
-modelo dimensional (`FATO_ATENDIMENTO` + `DIM_POPULACAO`/`DIM_ESTABELECIMENTO`/
-`DIM_PROFISSIONAL`), com a fórmula:
+O indicador utilizado na versão final da solução está implementado na view:
 
 ```text
-índice = APC / (0,5 × PPC + 0,5 × EPC)
+VW_INDICE_VERTEX
 ```
 
-**Importante:** nessa fórmula, índice **menor** indica **maior** indício de
-subutilização (é o inverso da leitura de uma versão anterior baseada em normalização
-Min-Max, descontinuada). Quando o mês/município está marcado com
-`FLAG_DADO_INCOMPLETO = 1` (por exemplo, todo o estado em março/2024), o índice fica
-`NULL` em vez de ser calculado sobre um dado ausente tratado como zero.
-
-A finalidade do índice é destacar municípios que merecem investigação adicional por
-apresentarem possível diferença entre capacidade disponível e utilização observada.
-
-As tabelas/views utilizadas no ambiente Oracle são:
+A view utiliza o modelo dimensional:
 
 ```text
-ADMIN.FATO_ATENDIMENTO, ADMIN.DIM_*, ADMIN.VW_INDICE_VERTEX
-ADMIN.V_VERTEX_DASHBOARD  →  WKSP_VERTEX.V_VERTEX_DASHBOARD (view-ponte usada pelo APEX)
+FATO_ATENDIMENTO
+        +
+DIM_POPULACAO
+DIM_ESTABELECIMENTO
+DIM_PROFISSIONAL
 ```
 
-Os scripts SQL relacionados à implementação utilizada no ambiente Oracle estão disponíveis em:
+A fórmula utilizada é:
 
 ```text
-mariana_oracle_apex/04_Scripts_SQL/
+Índice = APC / (0,5 × PPC + 0,5 × EPC)
 ```
 
-O diretório:
+Onde os componentes representam indicadores relacionados à produção, população e capacidade assistencial utilizados pela metodologia da VERTEX.
+
+### Interpretação
+
+Na versão final:
 
 ```text
-sql/andreza_oficial/
+Índice menor
+      ↓
+Maior indício de subutilização
 ```
 
-contém o DDL completo do modelo 3FN + dimensional (staging → `DIM_*`/`FATO_ATENDIMENTO`
-→ `VW_INDICE_VERTEX`) que fundamenta essa versão final.
+O indicador deve ser utilizado como **sinal para investigação**, e não como uma conclusão isolada sobre determinado município.
+
+### Qualidade dos dados
+
+Quando um período apresenta dados incompletos, identificado por:
+
+```text
+FLAG_DADO_INCOMPLETO = 1
+```
+
+o índice é definido como:
+
+```text
+NULL
+```
+
+em vez de tratar automaticamente a ausência de dados como zero.
+
+Essa abordagem evita que períodos com informação ausente sejam interpretados como baixa utilização.
+
+Um exemplo identificado durante a análise foi a ausência de dados para todo o estado em determinado período de **março de 2024**.
 
 ---
 
-## 🗄️ Oracle Autonomous Database
+# 🗄️ Oracle Autonomous Database
 
-O **Oracle Autonomous Database** é a principal camada de persistência e consulta da solução.
+O **Oracle Autonomous Database** funciona como principal camada de persistência e consulta da VERTEX.
 
-Nele são mantidos os dados estruturados utilizados pelo dashboard e pelas consultas com inteligência artificial.
+O banco armazena os dados estruturados utilizados pelo:
 
-Os materiais e evidências referentes ao banco estão organizados em:
+* Dashboard VERTEX;
+* Oracle APEX;
+* Oracle Select AI;
+* consultas SQL;
+* views analíticas.
+
+As estruturas principais da solução final incluem:
+
+```text
+ADMIN.FATO_ATENDIMENTO
+ADMIN.DIM_*
+ADMIN.VW_INDICE_VERTEX
+ADMIN.V_VERTEX_DASHBOARD
+```
+
+Para o APEX, é utilizada uma view-ponte:
+
+```text
+WKSP_VERTEX.V_VERTEX_DASHBOARD
+```
+
+Os materiais relacionados ao banco estão organizados em:
 
 ```text
 mariana_oracle_apex/01_Banco_Oracle/
 ```
 
-O Oracle é responsável por armazenar e disponibilizar os dados consolidados consumidos pelas demais camadas da solução.
-
 ---
 
-## 🧠 Oracle Select AI
+# 🧠 Oracle Select AI
 
-Além da análise visual, a VERTEX utiliza o **Oracle Select AI** para permitir que perguntas sobre a base sejam realizadas em linguagem natural.
+A VERTEX utiliza o **Oracle Select AI** para permitir consultas aos dados utilizando linguagem natural.
 
-Exemplo:
+Por exemplo:
 
 ```text
-Quais municípios possuem menor quantidade de profissionais por 10 mil habitantes?
+Quais municípios possuem menor quantidade de profissionais
+por 10 mil habitantes?
 ```
 
-Por meio do:
+A partir do:
 
 ```sql
 DBMS_CLOUD_AI.GENERATE
 ```
 
-o Select AI interpreta a pergunta e pode gerar automaticamente uma consulta SQL sobre os dados estruturados no Oracle.
+o Select AI pode interpretar a pergunta e gerar uma consulta SQL baseada nos dados disponíveis no Oracle.
 
-Durante a implementação foram utilizados modos como:
+Durante a implementação foram utilizados recursos como:
 
 ```text
 showsql
 ```
 
-para visualizar o SQL produzido pela inteligência artificial, e:
+para visualizar o SQL gerado pela IA, e:
 
 ```text
 runsql
 ```
 
-para executar a consulta e retornar o resultado.
+para executar a consulta e retornar seus resultados.
 
-Os scripts e evidências dessa etapa estão disponíveis em:
+Os scripts e evidências dessa etapa estão em:
 
 ```text
 mariana_oracle_apex/02_Select_AI/
 ```
 
-Essa funcionalidade reduz a barreira técnica entre o dado e o usuário que precisa realizar uma análise.
+A utilização de linguagem natural reduz a barreira técnica entre o usuário e os dados, permitindo explorar a base sem que todas as consultas precisem ser construídas manualmente.
 
 ---
 
-## 📈 Dashboard VERTEX
+# 📈 Dashboard VERTEX
 
-O dashboard desenvolvido no **Oracle APEX** apresenta uma visão consolidada dos principais indicadores utilizados pela solução.
+A solução possui duas interfaces principais de exploração dos dados.
 
-Entre as informações analisadas estão:
+## Oracle APEX
+
+O Dashboard desenvolvido no **Oracle APEX** apresenta uma visão consolidada dos principais indicadores da VERTEX.
+
+Entre os dados disponíveis estão:
 
 * município;
 * população;
-* quantidade de profissionais;
+* profissionais de saúde;
 * profissionais por 10 mil habitantes;
-* produção e procedimentos ambulatoriais;
-* indicadores derivados utilizados pela VERTEX.
+* produção ambulatorial;
+* procedimentos realizados;
+* indicadores derivados;
+* informações relacionadas ao índice de subutilização.
 
-A proposta é permitir que os indicadores sejam observados de forma integrada e comparável, facilitando a identificação de padrões e possíveis desequilíbrios.
-
-Os materiais e o link da aplicação estão disponíveis em:
+Os materiais do dashboard estão disponíveis em:
 
 ```text
 mariana_oracle_apex/03_Dashboard_APEX/
 ```
 
-### Dashboard VERTEX Standalone (Netlify)
+---
 
-Para facilitar o acesso e a exploração dos dados de forma independente, um **dashboard HTML standalone** foi desenvolvido com base na mesma lógica analítica do APEX.
+## 🌐 Dashboard Standalone
 
-O painel é totalmente autocontido (sem dependências externas) e apresenta:
+Também foi desenvolvido um **dashboard HTML standalone**, permitindo explorar os dados de maneira independente do ambiente APEX.
+
+O painel apresenta:
 
 * ranking de municípios por indício de subutilização;
-* scatter plot: capacidade × procedimentos realizados;
-* evolução temporal (2021-2024) de qualquer indicador selecionado;
-* qualidade de dados (registros completos vs incompletos);
-* tabela comparativa de municípios.
+* relação entre capacidade e procedimentos realizados;
+* evolução temporal entre 2021 e 2024;
+* seleção de diferentes indicadores;
+* análise da qualidade dos dados;
+* comparação entre municípios.
 
-**Acesso ao dashboard:**
+O dashboard utiliza a mesma fonte analítica:
 
+```text
+ADMIN.V_VERTEX_DASHBOARD
 ```
-Repositório: dashboard/index.html
-Deploy ao vivo: (https://vertex-challenge-oracle-fiap.netlify.app/)
+
+e segue a mesma metodologia utilizada no painel APEX.
+
+### Acesso
+
+**Repositório:**
+
+```text
+dashboard/index.html
 ```
 
-O dashboard utiliza a mesma fonte de dados (`ADMIN.V_VERTEX_DASHBOARD`) e segue as mesmas metodologias de cálculo do painel APEX, garantindo consistência entre as análises.
+**Deploy:**
+
+https://vertex-challenge-oracle-fiap.netlify.app/
 
 ---
 
-## 🌬️ Apache Airflow
+# 🔎 Fluxo de Análise
 
-O **Apache Airflow** é utilizado para orquestrar o pipeline de dados da VERTEX.
-
-O ambiente local está organizado em:
+A VERTEX transforma os dados em uma sequência analítica:
 
 ```text
-airflow-vertex/
+┌──────────────┐
+│    DADOS     │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│  INTEGRAÇÃO  │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ COMPARAÇÃO   │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│   INSIGHT    │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ INVESTIGAÇÃO │
+└──────────────┘
 ```
 
-Esse diretório contém os arquivos necessários para execução do ambiente, incluindo:
-
-* configuração Docker;
-* DAGs;
-* dados utilizados no ambiente;
-* logs;
-* arquivos de conexão com o Oracle;
-* arquivos auxiliares de execução.
-
-As evidências visuais das execuções estão organizadas em:
-
-```text
-airflow-vertex/evidencias/
-```
-
-As DAGs principais mantidas no projeto são:
-
-```text
-airflow-vertex/dags/dag_vertex_batch.py
-airflow-vertex/dags/dag_vertex_speed.py
-airflow-vertex/dags/vertex_common.py
-```
+O objetivo não é produzir uma conclusão automática sobre cada município, mas **evidenciar padrões que possam orientar análises posteriores**.
 
 ---
 
-## 🔎 Fluxo de análise da VERTEX
-
-A proposta analítica pode ser resumida em quatro etapas:
-
-```text
-DADOS
-  ↓
-COMPARAÇÃO
-  ↓
-INSIGHT
-  ↓
-DECISÃO
-```
-
-Primeiro, os dados provenientes de diferentes fontes são integrados e tratados.
-
-Depois, indicadores relativos permitem comparar municípios de diferentes portes.
-
-Essas comparações ajudam a destacar possíveis desigualdades ou desequilíbrios.
-
-Por fim, os resultados servem como ponto de partida para investigação e apoio à tomada de decisão.
-
----
-
-## 📂 Estrutura do repositório
+# 📁 Estrutura do Repositório
 
 ```text
 vertex-challenge-oracle-fiap/
 │
 ├── airflow-vertex/
 │   ├── dags/
+│   │   ├── dag_vertex_batch.py
+│   │   ├── dag_vertex_speed.py
+│   │   └── vertex_common.py
 │   ├── data/
 │   ├── evidencias/
 │   ├── logs/
@@ -394,6 +510,7 @@ vertex-challenge-oracle-fiap/
 │   └── docker-compose.yaml
 │
 ├── dashboard/
+│   └── index.html
 │
 ├── docs/
 │
@@ -412,28 +529,49 @@ vertex-challenge-oracle-fiap/
 │   └── arquivo/
 │       └── ddl_serving_tables_deprecated.sql
 │
+├── modelo_preditivo/
+│   └── dados/
+│
 └── README.md
 ```
 
 ---
 
-## 🗂️ Conteúdo por área
+# 🗂️ Organização dos Diretórios
 
-| Diretório                               | Conteúdo principal                                                     |
-| --------------------------------------- | ---------------------------------------------------------------------- |
-| `airflow-vertex/`                       | Ambiente local de execução do Apache Airflow                           |
-| `mariana_oracle_apex/`                  | Banco Oracle, Select AI, Dashboard APEX e scripts SQL da solução final |
-| `notebooks/`                            | Análise exploratória dos dados                                         |
-| `graficos/`                             | Gráficos e rankings produzidos durante a análise                       |
-| `dashboard/`                            | Scripts analíticos desenvolvidos durante o projeto                     |
-| `docs/`                                 | Documentação de governança, ética e materiais complementares           |
-| `sql/andreza_oficial/`                  | Modelagem oficial (3FN + dimensional) usada pelo dashboard/Select AI finais |
-| `sql/arquivo/`                          | DDL antigo (schema `SERVING_*`), mantido apenas como histórico         |
-| `modelo_preditivo/dados/`               | CSVs de entrada (indicadores) usados pelo modelo preditivo             |
+| Diretório                    | Conteúdo                                              |
+| ---------------------------- | ----------------------------------------------------- |
+| `airflow-vertex/`            | Ambiente local e pipelines Apache Airflow             |
+| `airflow-vertex/dags/`       | DAGs e funções compartilhadas dos pipelines           |
+| `airflow-vertex/evidencias/` | Evidências das execuções do Airflow                   |
+| `mariana_oracle_apex/`       | Componentes Oracle da solução                         |
+| `01_Banco_Oracle/`           | Evidências e materiais do banco                       |
+| `02_Select_AI/`              | Scripts e evidências do Select AI                     |
+| `03_Dashboard_APEX/`         | Dashboard desenvolvido no Oracle APEX                 |
+| `04_Scripts_SQL/`            | Scripts SQL utilizados na implementação               |
+| `notebooks/`                 | Análises exploratórias                                |
+| `graficos/`                  | Visualizações e análises produzidas durante o projeto |
+| `dashboard/`                 | Dashboard HTML standalone                             |
+| `docs/`                      | Documentação e materiais complementares               |
+| `sql/andreza_oficial/`       | Modelo 3FN + dimensional da solução final             |
+| `sql/arquivo/`               | DDLs históricos/depreciados                           |
+| `modelo_preditivo/dados/`    | Dados utilizados pelo modelo preditivo                |
 
 ---
 
-## 🛠️ Tecnologias utilizadas
+# 🛠️ Tecnologias
+
+### Dados & Engenharia
+
+* Python
+* Pandas
+* SQL
+* Apache Airflow
+* Docker
+* Git
+* GitHub
+
+### Oracle
 
 * Oracle Autonomous Database
 * Oracle Database Actions
@@ -441,18 +579,12 @@ vertex-challenge-oracle-fiap/
 * Oracle APEX
 * Oracle Select AI
 * DBMS_CLOUD_AI
-* Apache Airflow
-* Docker
-* Python
-* Pandas
-* Git
-* GitHub
 
 ---
 
-## 📸 Evidências
+# 📸 Evidências
 
-As principais evidências de implementação do projeto estão distribuídas entre os diretórios da solução.
+As evidências da implementação estão organizadas por componente:
 
 ### Oracle Database
 
@@ -466,13 +598,13 @@ mariana_oracle_apex/01_Banco_Oracle/
 mariana_oracle_apex/02_Select_AI/
 ```
 
-### Dashboard Oracle APEX
+### Oracle APEX
 
 ```text
 mariana_oracle_apex/03_Dashboard_APEX/
 ```
 
-### Scripts SQL
+### SQL
 
 ```text
 mariana_oracle_apex/04_Scripts_SQL/
@@ -484,56 +616,54 @@ mariana_oracle_apex/04_Scripts_SQL/
 airflow-vertex/evidencias/
 ```
 
-As evidências do Airflow demonstram a disponibilização das DAGs, seus fluxos, estados de execução e logs relevantes.
+As evidências do Airflow incluem a disponibilização das DAGs, fluxos, estados de execução e logs relevantes.
 
 ---
 
-## ⚠️ Limitações conhecidas
+# ⚠️ Limitações
 
-A VERTEX utiliza dados públicos provenientes de sistemas com diferentes periodicidades e características de registro.
+A análise da VERTEX depende de bases públicas que possuem diferentes periodicidades, coberturas e características de registro.
 
-Por isso, diferenças entre municípios podem estar relacionadas também a fatores como:
+Por isso, diferenças observadas entre municípios podem estar relacionadas, entre outros fatores, a:
 
 * períodos com dados ausentes ou incompletos;
-* alterações na forma de registro dos atendimentos;
-* diferenças de cobertura entre sistemas;
-* migração de municípios para outros sistemas de informação;
+* diferenças na forma de registro dos atendimentos;
+* alterações na cobertura dos sistemas;
+* migração de municípios entre sistemas de informação;
 * fluxo de pacientes entre municípios;
-* características demográficas e assistenciais locais não representadas diretamente no modelo.
+* características demográficas locais;
+* características assistenciais não representadas diretamente no modelo.
 
-Durante a análise de qualidade foram identificadas situações de ausência de dados que reforçam a necessidade de interpretar os resultados como **sinais para investigação**, e não como conclusões isoladas.
-
----
-
-## 🚀 Próximos passos
-
-Como evolução, a VERTEX pode incorporar:
-
-* ampliação da cobertura de municípios;
-* ampliação da série histórica;
-* novos indicadores de saúde;
-* análises temporais;
-* alertas automáticos;
-* modelos preditivos;
-* novas consultas utilizando inteligência artificial;
-* mecanismos adicionais de priorização de regiões.
+A análise de qualidade dos dados identificou períodos com informações incompletas. Por esse motivo, os indicadores devem ser interpretados como **sinais para investigação**, considerando o contexto de cada município.
 
 ---
 
-## 🎓 Contexto acadêmico
+# 🚀 Próximos Passos
 
-Projeto desenvolvido para o:
+Entre as possibilidades de evolução da VERTEX estão:
+
+* automatizar a carga mensal do modelo dimensional por meio do Airflow;
+* ampliar a cobertura de municípios;
+* ampliar a série histórica;
+* incorporar novos indicadores de saúde;
+* adicionar análises temporais mais avançadas;
+* criar alertas automáticos;
+* desenvolver modelos preditivos;
+* ampliar as consultas em linguagem natural;
+* incorporar novos mecanismos de análise e priorização de regiões.
+
+---
+
+# 🎓 Contexto Acadêmico
 
 **Challenge Oracle & FIAP 2026**
 
-Turma:
+**Turma:** 1TSCPF
 
-**1TSCPF**
-
-Projeto:
-
-**VERTEX**
+**Projeto:** VERTEX
 
 ### Dados que conectam necessidade e capacidade.
 
-A VERTEX busca transformar dados públicos de saúde em informação acessível, integrando diferentes indicadores para apoiar análises e decisões orientadas por evidências.
+A VERTEX busca transformar dados públicos de saúde em informação acessível, integrando diferentes fontes e indicadores para apoiar análises orientadas por evidências.
+
+---
