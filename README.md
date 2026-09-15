@@ -297,6 +297,27 @@ Os materiais e o link da aplicação estão disponíveis em:
 mariana_oracle_apex/03_Dashboard_APEX/
 ```
 
+### Dashboard VERTEX Standalone (Netlify)
+
+Para facilitar o acesso e a exploração dos dados de forma independente, um **dashboard HTML standalone** foi desenvolvido com base na mesma lógica analítica do APEX.
+
+O painel é totalmente autocontido (sem dependências externas) e apresenta:
+
+* ranking de municípios por indício de subutilização;
+* scatter plot: capacidade × procedimentos realizados;
+* evolução temporal (2021-2024) de qualquer indicador selecionado;
+* qualidade de dados (registros completos vs incompletos);
+* tabela comparativa de municípios.
+
+**Acesso ao dashboard:**
+
+```
+Repositório: dashboard/index.html
+Deploy ao vivo: [URL Netlify será inserida aqui]
+```
+
+O dashboard utiliza a mesma fonte de dados (`ADMIN.V_VERTEX_DASHBOARD`) e segue as mesmas metodologias de cálculo do painel APEX, garantindo consistência entre as análises.
+
 ---
 
 ## 🌬️ Apache Airflow
