@@ -13,13 +13,15 @@ feedback da Sprint 3 em que Batch e Speed rodavam na mesma DAG mensal.
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from vertex_common import ingestao_cnes, transformar_cnes
 
 default_args = {
     "owner": "equipe_vertex",
     "start_date": datetime(2026, 8, 20),
+    "retries": 2,
+    "retry_delay": timedelta(minutes=5),
 }
 
 with DAG(

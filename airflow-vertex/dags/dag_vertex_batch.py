@@ -29,6 +29,8 @@ from vertex_common import (
 default_args = {
     "owner": "equipe_vertex",
     "start_date": datetime(2026, 8, 20),
+    "retries": 2,
+    "retry_delay": timedelta(minutes=5),
 }
 
 JANELA_MAX_ATRASO = timedelta(hours=48)
