@@ -1,0 +1,27 @@
+# Netlify configuration for VERTEX Dashboard
+
+# Build command (não precisa, é HTML puro)
+[build]
+  command = "echo 'No build needed - static HTML'"
+  publish = "."
+
+# Redirects para SPA behavior
+[[redirects]]
+  from = "/*"
+  to = "/dashboard/index.html"
+  status = 200
+
+# Headers de segurança
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache policy
+[[headers]]
+  for = "/dashboard/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
